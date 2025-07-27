@@ -10,8 +10,9 @@ export interface ButtonProps {
 }
 
 export interface CardProps {
-  children: React.ReactNode;
-  className?: string;
+  title: string;
+  content: string;
+  lassName?: string;
 }
 
 /* API Data Interfaces */
