@@ -41,6 +41,8 @@ export interface Post {
 
 /* Page Props */
 export interface PageProps {
-  params?: { [key: string]: string | string[] };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  id: number;
+  title: string;
+  body: string;
+  userId: number;
 }
