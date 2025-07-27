@@ -17,10 +17,9 @@ export interface CardProps {
 
 /* API Data Interfaces */
 export interface User {
-  id: number;
-  name: string;
-  email: string;
-  username?: string;
+  id?: number;
+  title: string;
+  content: string;
 }
 
 export interface Post {
