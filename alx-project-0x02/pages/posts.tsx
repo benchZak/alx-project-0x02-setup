@@ -1,34 +1,38 @@
 // pages/posts.tsx
-import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Header from '@/components/layout/Header';
 import PostCard from '@/components/common/PostCard';
 import { type PostProps } from '@/interfaces';
 
-export default function PostsPage() {
-  const [posts, setPosts] = useState<PostProps[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+interface PostsPageProps {
+  posts: PostProps[];
+  error?: string;
+}
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts');
-        }
-        const data = await response.json();
-        setPosts(data.slice(0, 12)); // Limit to 12 posts for demo
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
+export async function getStaticProps() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    const data = await response.json();
+    return {
+      props: {
+        posts: data.slice(0, 12) // Limit to 12 posts for demo
+      },
+      revalidate: 60 // Regenerate page every 60 seconds
+    };
+  } catch (err) {
+    return {
+      props: {
+        posts: [],
+        error: err instanceof Error ? err.message : 'An unknown error occurred'
       }
     };
+  }
+}
 
-    fetchPosts();
-  }, []);
-
+export default function PostsPage({ posts, error }: PostsPageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
@@ -42,11 +46,7 @@ export default function PostsPage() {
           Latest Posts
         </h1>
 
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">Loading posts...</p>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
             <p className="text-red-700">{error}</p>
           </div>
